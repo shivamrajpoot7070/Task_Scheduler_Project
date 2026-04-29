@@ -1,0 +1,37 @@
+{
+  "name": "distributed-task-scheduler",
+  "version": "1.0.0",
+  "description": "Production-grade distributed task scheduler platform",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "worker": "node src/workers/worker.js",
+    "scheduler": "node src/scheduler/scheduler.loop.js"
+  },
+  "keywords": [
+    "scheduler",
+    "queue",
+    "redis",
+    "postgres",
+    "system-design"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "pg": "^8.11.5",
+    "pino": "^9.3.2",
+    "pino-http": "^10.3.0",
+    "pino-pretty": "^11.2.2",
+    "uuid": "^9.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
