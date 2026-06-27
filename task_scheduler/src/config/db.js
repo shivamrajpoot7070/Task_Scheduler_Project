@@ -5,20 +5,26 @@ import logger from "../common/logger.js";
 const { Pool } = pkg;
 
 // ===============================
-// CREATE POOL
+// DATABASE CONFIG
 // ===============================
-const pool = new Pool({
-  connectionString: env.DATABASE_URL || undefined,
-  host: env.POSTGRES_HOST,
-  port: env.POSTGRES_PORT,
-  database: env.POSTGRES_DB,
-  user: env.POSTGRES_USER,
-  password: env.POSTGRES_PASSWORD,
+const isCloudDatabase = !!env.DATABASE_URL;
 
-  max: 10, // max connections
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000
-});
+const pool = new Pool(
+  isCloudDatabase
+    ? {
+        connectionString: env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {
+        host: env.POSTGRES_HOST,
+        port: env.POSTGRES_PORT,
+        database: env.POSTGRES_DB,
+        user: env.POSTGRES_USER,
+        password: env.POSTGRES_PASSWORD,
+      }
+);
 
 // ===============================
 // CONNECT FUNCTION
@@ -27,7 +33,9 @@ export async function connectDB() {
   try {
     const client = await pool.connect();
 
-    logger.info("✅ PostgreSQL connected");
+    logger.info(
+      `✅ PostgreSQL connected (${isCloudDatabase ? "Neon" : "Local"})`
+    );
 
     client.release();
   } catch (error) {

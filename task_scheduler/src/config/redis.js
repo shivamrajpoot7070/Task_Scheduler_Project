@@ -5,8 +5,7 @@ import logger from "../common/logger.js";
 // ===============================
 // CREATE REDIS CLIENT
 // ===============================
-const redis = new Redis(env.REDIS_URL, {
-  tls: {}, // 🔥 REQUIRED for Upstash
+const redis = new Redis(process.env.REDIS_URL, {
   maxRetriesPerRequest: 3,
   retryStrategy(times) {
     const delay = Math.min(times * 100, 2000);
@@ -14,9 +13,6 @@ const redis = new Redis(env.REDIS_URL, {
   }
 });
 
-// ===============================
-// EVENT LISTENERS
-// ===============================
 redis.on("connect", () => {
   logger.info("✅ Redis connected");
 });
