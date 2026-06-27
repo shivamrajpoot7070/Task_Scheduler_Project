@@ -27,6 +27,14 @@ const envSchema = z
     MAX_RETRIES: z.coerce.number().default(3),
     RETRY_BASE_DELAY_MS: z.coerce.number().default(5000),
 
+    SMTP_HOST: z.string(),
+
+SMTP_PORT: z.coerce.number(),
+
+SMTP_EMAIL: z.string().email(),
+
+SMTP_PASSWORD: z.string(),
+
     // Logging
     LOG_LEVEL: z.string().default("info"),
   })

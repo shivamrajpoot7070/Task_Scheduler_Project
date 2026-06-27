@@ -4,6 +4,7 @@ import app from "./app.js";
 import logger from "./common/logger.js";
 import env from "./config/env.js";
 import { connectDB } from "./config/db.js";
+import { verifyMailer } from "./services/mail.service.js";
 import "./config/redis.js"; // just importing initializes Redis
 
 const PORT = env.PORT;
@@ -11,6 +12,7 @@ const PORT = env.PORT;
 async function startServer() {
   try {
     // Connect DB
+    await verifyMailer();
     await connectDB();
 
     // Start server

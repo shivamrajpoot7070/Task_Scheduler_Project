@@ -19,14 +19,22 @@ import { getMetricsController } from "./task.controller.js";
 
 const router = express.Router();
 
-// ===============================
-// VALIDATION
-// ===============================
-const createTaskSchema = z.object({
+
+const emailPayloadSchema = z.object({
+  to: z.string().email(),
+  subject: z.string().min(1).max(200),
+  text: z.string().min(1),
+  html: z.string().optional()
+});
+
+export const createTaskSchema = z.object({
   body: z.object({
     type: z.enum(["EMAIL", "DATA_PROCESSING"]),
-    payload: z.any(),
+
+    payload: emailPayloadSchema,
+
     scheduledAt: z.string().datetime(),
+
     maxRetries: z.number().min(0).max(10).optional()
   })
 });

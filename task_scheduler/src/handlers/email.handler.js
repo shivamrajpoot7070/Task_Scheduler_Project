@@ -1,26 +1,23 @@
 import logger from "../common/logger.js";
+import { sendMail } from "../services/mail.service.js";
 
 // ===============================
-// MOCK EMAIL HANDLER
+// REAL EMAIL HANDLER
 // ===============================
 export async function sendEmail(task) {
   
-  const { email } = task.payload;
+  const { to, subject, text } = task.payload;
 
-  // 🔥 FORCE FAILURE (deterministic test)
-  if (email === "fail@test.com") {
-    throw new Error("Simulated email failure");
-  }
+  logger.info(`📧 Sending email to ${to}`);
 
-  // 🔥 OPTIONAL: Retry success scenario (very useful)
-  if (email === "retry@test.com" && task.retry_count < 2) {
-    throw new Error("Fail first 2 times, then succeed");
-  }
+  const info = await sendMail({
+    to,
+    subject,
+    text,
+  });
 
-  logger.info(`📧 Sending email to ${email}`);
+  logger.info(`✅ Email sent successfully`);
+  logger.info(`📨 Message ID: ${info.messageId}`);
 
-  // simulate delay
-  await new Promise((res) => setTimeout(res, 1000));
-
-  logger.info(`✅ Email sent successfully to ${email}`);
+  return info;
 }
