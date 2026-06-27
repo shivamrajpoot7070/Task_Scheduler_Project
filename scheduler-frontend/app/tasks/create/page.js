@@ -7,32 +7,42 @@ import Link from "next/link";
 
 export default function CreateTask() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [to, setTo] = useState("");
+const [subject, setSubject] = useState("");
+const [text, setText] = useState("");
+const [loading, setLoading] = useState(false);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  setLoading(true);
 
-    const payload = {
-      type: "EMAIL",
-      payload: { email },
-      scheduledAt: new Date().toISOString(),
-    };
+  const payload = {
+    type: "EMAIL",
 
-    try {
-      const res = await createTask(payload);
-      const createdTask = res?.data;
+    payload: {
+      to,
+      subject,
+      text,
+    },
 
-      if (!createdTask?.id) {
-        alert("❌ Task created but ID missing");
-        return;
-      }
+    scheduledAt: new Date().toISOString(),
 
-      router.push(`/tasks/${createdTask.id}`);
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to create task");
-    }
+    maxRetries: 3,
   };
+
+  try {
+    const res = await createTask(payload);
+
+    const createdTask = res?.data;
+
+    router.push(`/tasks/${createdTask.id}`);
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to create task");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-4 py-6">
@@ -74,25 +84,57 @@ export default function CreateTask() {
           <form onSubmit={handleSubmit} className="space-y-5">
             
             <div>
-              <label className="block text-xs text-gray-400 mb-2">
-                EMAIL ADDRESS
-              </label>
-              <input
-                type="email"
-                placeholder="example@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-              />
-            </div>
+  <label className="block text-xs text-gray-400 mb-2">
+    RECIPIENT EMAIL
+  </label>
+
+  <input
+    type="email"
+    placeholder="recipient@gmail.com"
+    value={to}
+    onChange={(e) => setTo(e.target.value)}
+    required
+    className="w-full px-4 py-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  />
+</div>
+
+<div>
+  <label className="block text-xs text-gray-400 mb-2">
+    SUBJECT
+  </label>
+
+  <input
+    type="text"
+    placeholder="Interview Reminder"
+    value={subject}
+    onChange={(e) => setSubject(e.target.value)}
+    required
+    className="w-full px-4 py-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  />
+</div>
+
+<div>
+  <label className="block text-xs text-gray-400 mb-2">
+    MESSAGE
+  </label>
+
+  <textarea
+    rows={6}
+    placeholder="Write your email..."
+    value={text}
+    onChange={(e) => setText(e.target.value)}
+    required
+    className="w-full px-4 py-3 rounded-lg bg-gray-900/60 border border-gray-700 text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  />
+</div>
 
             <button
-              type="submit"
-              className="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              🚀 Create Task
-            </button>
+  disabled={loading}
+  type="submit"
+  className="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
+>
+  {loading ? "Creating..." : "🚀 Create Email Task"}
+</button>
           </form>
 
           <div className="mt-6 text-center text-xs text-gray-500">

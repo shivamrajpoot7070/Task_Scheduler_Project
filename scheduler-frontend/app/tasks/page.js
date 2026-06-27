@@ -103,7 +103,7 @@ export default function TasksPage() {
                   <p className="text-sm">
                     <span className="text-gray-400">Email:</span>{" "}
                     <span className="text-white">
-                      {task.payload?.email}
+                      {task.payload?.to}
                     </span>
                   </p>
                 )}
